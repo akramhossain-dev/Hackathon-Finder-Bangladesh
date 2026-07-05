@@ -1,13 +1,6 @@
 /**
- * db.ts — MongoDB connection placeholder (Phase 0).
- *
- * Phase 1 implementation:
- *  1. npm install mongoose
- *  2. Add MONGODB_URI to .env
- *  3. Implement connectDB() with proper error handling and retry logic
- *  4. Call connectDB() from server.ts before app.listen()
- *  5. See docs/DATABASE.md for schema definitions
+ * config/db.ts — re-exports from src/db/index.ts (Phase 1).
+ * Kept for backward compatibility during refactoring.
+ * Import from src/db/ directly in new code.
  */
-
-// Phase 1: export async function connectDB(): Promise<void> { ... }
-export {};
+export { connectDB, disconnectDB } from "../db/index";

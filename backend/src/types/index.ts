@@ -1,20 +1,29 @@
 /**
- * Shared TypeScript types for the backend — Phase 0 scaffold.
+ * types/index.ts — Shared backend TypeScript types (Phase 1).
  *
- * Phase 1: Add Mongoose document interfaces, request augmentation.
+ * Keep this file as the single source of truth for domain-level types
+ * that are shared across modules (routes, controllers, services, models).
+ *
+ * Module-specific types should live in their own <module>.types.ts file.
  */
 
-// ── User ─────────────────────────────────────────────────────────────────
+// ── User ─────────────────────────────────────────────────────────────────────
 export type UserRole = "user" | "admin";
 
-// ── Hackathon ─────────────────────────────────────────────────────────────
+// ── Hackathon ─────────────────────────────────────────────────────────────────
 export type HackathonStatus =
   | "draft"
   | "published"
   | "archived"
   | "pending_review";
 
-// ── API Envelope ──────────────────────────────────────────────────────────
+// ── Submission ────────────────────────────────────────────────────────────────
+export type SubmissionStatus = "pending" | "approved" | "rejected";
+
+// ── Scraper source types ──────────────────────────────────────────────────────
+export type SourceType = "html_scrape" | "rss_feed" | "api_endpoint";
+
+// ── API envelope types ────────────────────────────────────────────────────────
 export interface ApiSuccessResponse<T = unknown> {
   success: true;
   message: string;
@@ -24,15 +33,24 @@ export interface ApiSuccessResponse<T = unknown> {
 export interface ApiErrorResponse {
   success: false;
   message: string;
-  errors?: unknown[];
+  errors?: Array<{ field: string; message: string }>;
 }
 
-// ── Express request augmentation (Phase 1) ────────────────────────────────
-// declare global {
-//   namespace Express {
-//     interface Request {
-//       user?: { _id: string; role: UserRole };
-//     }
-//   }
-// }
-export {};
+export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
+
+// ── Pagination ────────────────────────────────────────────────────────────────
+export interface PaginationQuery {
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+// ── Request augmentation ─────────────────────────────────────────────────────
+// Extended in middlewares/authenticate.ts
+// Available on req.user after authenticate() middleware runs

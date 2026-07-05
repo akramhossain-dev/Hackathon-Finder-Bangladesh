@@ -1,25 +1,36 @@
 /**
- * ApiError.ts — Custom error class for structured API error responses.
+ * ApiError.ts — Custom error class for structured API error responses (Phase 1).
  *
- * Used by controllers and services to throw typed errors.
- * Caught by the global error handler in app.ts.
+ * Thrown inside controllers and services.
+ * Caught and formatted by errorHandler middleware.
  *
- * Phase 1: Wire into global error handler in app.ts.
+ * Design:
+ *  - isOperational = true  → expected error (bad input, not found, unauthorized)
+ *  - isOperational = false → programming error (should never reach the user)
  */
 export class ApiError extends Error {
   public readonly statusCode: number;
   public readonly isOperational: boolean;
+  public readonly errors?: unknown[];
 
-  constructor(statusCode: number, message: string, isOperational = true) {
+  constructor(
+    statusCode: number,
+    message: string,
+    errors?: unknown[],
+    isOperational = true
+  ) {
     super(message);
     this.statusCode = statusCode;
     this.isOperational = isOperational;
+    this.errors = errors;
     Object.setPrototypeOf(this, new.target.prototype);
     Error.captureStackTrace(this, this.constructor);
   }
 
-  static badRequest(message: string): ApiError {
-    return new ApiError(400, message);
+  // ── Static factory methods ────────────────────────────────────────────────
+
+  static badRequest(message: string, errors?: unknown[]): ApiError {
+    return new ApiError(400, message, errors);
   }
 
   static unauthorized(message = "Unauthorized"): ApiError {
@@ -34,7 +45,19 @@ export class ApiError extends Error {
     return new ApiError(404, message);
   }
 
+  static conflict(message: string): ApiError {
+    return new ApiError(409, message);
+  }
+
+  static tooManyRequests(message = "Too many requests"): ApiError {
+    return new ApiError(429, message);
+  }
+
+  static notImplemented(message = "Not implemented"): ApiError {
+    return new ApiError(501, message, undefined, false);
+  }
+
   static internal(message = "Internal server error"): ApiError {
-    return new ApiError(500, message, false);
+    return new ApiError(500, message, undefined, false);
   }
 }
