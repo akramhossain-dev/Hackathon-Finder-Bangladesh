@@ -1,0 +1,97 @@
+{
+  "agent": "Hackathon Finder Bangladesh AI Agent",
+  "version": "1.0.0",
+
+  "skills": {
+    "core_intelligence": [
+      "intent_understanding",
+      "context_memory",
+      "task_planning",
+      "multi_step_reasoning",
+      "response_structuring"
+    ],
+
+    "hackathon_domain_skills": [
+      "hackathon_search",
+      "hackathon_filtering",
+      "hackathon_ranking",
+      "deadline_tracking",
+      "eligibility_matching",
+      "team_requirement_analysis",
+      "prize_analysis",
+      "category_classification"
+    ],
+
+    "data_processing": [
+      "json_parsing",
+      "api_response_mapping",
+      "data_normalization",
+      "sorting_and_filtering",
+      "aggregation_metrics"
+    ],
+
+    "recommendation_engine": [
+      "user_preference_inference",
+      "similar_hackathon_matching",
+      "ranking_by_relevance_score",
+      "personalized_suggestions"
+    ],
+
+    "tool_usage": [
+      "api_calling_rest",
+      "multi_tool_chaining",
+      "fallback_strategy",
+      "retry_logic",
+      "endpoint_selection"
+    ],
+
+    "search_skills": [
+      "keyword_extraction",
+      "semantic_search_simulation",
+      "tag_based_filtering",
+      "location_based_filtering"
+    ],
+
+    "security_skills": [
+      "input_validation",
+      "sanitization_awareness",
+      "safe_api_handling",
+      "token_handling_awareness"
+    ],
+
+    "business_logic": [
+      "hackathon_scoring_system",
+      "application_status_tracking",
+      "team_management_logic",
+      "event_lifecycle_handling",
+      "notification_triggers"
+    ],
+
+    "developer_skills": [
+      "debug_api_issues",
+      "generate_express_snippets",
+      "system_design_awareness",
+      "refactor_suggestions"
+    ],
+
+    "output_skills": [
+      "structured_json_output",
+      "markdown_response_formatting",
+      "api_response_formatting"
+    ]
+  },
+
+  "agent_behavior_rules": {
+    "always": [
+      "return_structured_output",
+      "prioritize_relevant_hackathons",
+      "filter_by_user_constraints",
+      "rank_results_by_relevance"
+    ],
+    "never": [
+      "return_unfiltered_raw_data",
+      "ignore_user_constraints",
+      "skip_error_handling"
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* ─── CSS Design Tokens ──────────────────────────────────────────────────── */
+:root {
+  /* Light mode defaults */
+  --background: #ffffff;
+  --foreground: #0f172a;
+
+  /* Brand (sky-blue — aligned with tailwind.config.ts) */
+  --brand-500: #0ea5e9;
+  --brand-600: #0284c7;
+
+  /* Typography */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+
+  /* Border radius */
+  --radius: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #f1f5f9;
+  }
+}
+
+/* ─── Base Styles ────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
