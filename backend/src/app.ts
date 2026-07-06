@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 import { env } from "./config/env";
 
 // ── Middleware ──────────────────────────────────────────────────────────────
@@ -39,6 +40,7 @@ app.use(globalLimiter);
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // parse httpOnly refresh-token cookie
 
 // ══════════════════════════════════════════════════════════════════════════════
 // HTTP request logging

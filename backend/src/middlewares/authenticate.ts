@@ -1,25 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import { ApiError } from "../utils/ApiError";
+import { verifyAccessToken } from "../utils/jwt";
 import { UserRole } from "../types";
 
 /**
- * authenticate.ts — JWT verification middleware (Phase 1 scaffold).
+ * authenticate.ts — JWT verification middleware (Phase 2).
  *
- * This file provides the TYPED INTERFACE for the middleware so that
- * controllers written now compile correctly.
+ * Reads the Bearer token from the Authorization header,
+ * verifies it, and attaches the decoded payload to req.user.
  *
- * Phase 2 implementation steps:
- *  1. npm install jsonwebtoken @types/jsonwebtoken
- *  2. Extract `Authorization: Bearer <token>` header
- *  3. jwt.verify(token, env.JWT_SECRET)
- *  4. Look up user in DB, check isActive
- *  5. Attach req.user = { _id, role } — see type below
- *  6. Throw ApiError.unauthorized() on any failure
- *
- * See docs/AUTH.md for the complete token strategy.
+ * Usage:
+ *   router.get("/me", authenticate, controller.me)
  */
 
-// ── Request augmentation — available after authenticate() runs ────────────
+// ── Request augmentation — available after authenticate() runs ────────────────
+
 declare global {
   namespace Express {
     interface Request {
@@ -33,25 +28,63 @@ export interface AuthUser {
   role: UserRole;
 }
 
-/**
- * authenticate — verifies the JWT and attaches req.user.
- * Phase 1: stub that throws 501 Not Implemented.
- * Phase 2: replace body with real JWT logic.
- */
-export function authenticate(req: Request, _res: Response, next: NextFunction): void {
-  // Phase 2: implement JWT verification here
-  void req; // suppress unused-var lint
-  next(ApiError.notImplemented("Authentication not implemented yet"));
+// ── authenticate ──────────────────────────────────────────────────────────────
+
+export function authenticate(
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      throw ApiError.unauthorized("Access token required");
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    if (!token) {
+      throw ApiError.unauthorized("Access token required");
+    }
+
+    const decoded = verifyAccessToken(token);
+
+    req.user = { _id: decoded._id, role: decoded.role };
+    next();
+  } catch (err) {
+    if (err instanceof ApiError) {
+      next(err);
+    } else {
+      // JWT errors (TokenExpiredError, JsonWebTokenError, etc.)
+      next(ApiError.unauthorized("Invalid or expired access token"));
+    }
+  }
 }
 
+// ── optionalAuthenticate ──────────────────────────────────────────────────────
+
 /**
- * optionalAuthenticate — attaches req.user if a valid token is present,
- * but does NOT reject the request if no token is provided.
+ * Attaches req.user if a valid Bearer token is present,
+ * but does NOT reject requests with no token.
  * Useful for public endpoints that show extra data to logged-in users.
- *
- * Phase 2: implement real logic.
  */
-export function optionalAuthenticate(_req: Request, _res: Response, next: NextFunction): void {
-  // Phase 2: try to verify token, silently skip if missing/invalid
+export function optionalAuthenticate(
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      if (token) {
+        const decoded = verifyAccessToken(token);
+        req.user = { _id: decoded._id, role: decoded.role };
+      }
+    }
+  } catch {
+    // Silently ignore invalid/missing tokens for optional auth
+  }
   next();
 }

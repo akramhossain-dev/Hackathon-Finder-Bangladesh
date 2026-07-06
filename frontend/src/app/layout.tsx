@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar, Footer } from "@/components/layout";
 import { APP_NAME } from "@/lib/constants";
+import { AuthProvider } from "@/context/AuthContext";
 
 // ── Fonts ─────────────────────────────────────────────────────────────────────
 const geistSans = Geist({
@@ -61,22 +62,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/*
-         * Phase 2: Add <ThemeProvider>, <AuthProvider> here (wrapping everything).
-         * Phase 3: Add <Toaster> for toast notifications (sonner or react-hot-toast).
-         */}
+        <AuthProvider>
+          {/* ── Site shell ─────────────────────────────────────────────────── */}
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
 
-        {/* ── Site shell ─────────────────────────────────────────────────── */}
-        <div className="flex min-h-screen flex-col">
-          <Navbar />
+            {/* ── Page content ─────────────────────────────────────────────── */}
+            <main className="flex-1">
+              {children}
+            </main>
 
-          {/* ── Page content ─────────────────────────────────────────────── */}
-          <main className="flex-1">
-            {children}
-          </main>
-
-          <Footer />
-        </div>
+            <Footer />
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
