@@ -1,6 +1,7 @@
 import { Router } from "express";
 import healthRouter from "./health.routes";
 import authRouter from "../modules/auth/auth.route";
+import hackathonRouter from "../modules/hackathon/hackathon.route";
 
 /**
  * routes/index.ts — Central API v1 router.
@@ -27,8 +28,11 @@ router.use("/", healthRouter);
 // ── Phase 2 — Auth ────────────────────────────────────────────────────────────
 router.use("/auth", authRouter);
 
-// ── Phase 3+: uncomment as features are implemented ──────────────────────────
-// router.use("/hackathons",  hackathonRouter);
+// ── Phase 3 — Hackathons ──────────────────────────────────────────────────────
+router.use("/hackathons", hackathonRouter);
+
+// ── Phase 4+: uncomment as features are implemented ──────────────────────────
 // router.use("/users",       userRouter);
+// router.use("/organizers",  organizerRouter);
 
 export default router;
