@@ -1,104 +1,205 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ROUTES } from "@/lib/constants";
+import { ROUTES, APP_NAME, APP_DESCRIPTION } from "@/lib/constants";
+import { Container, SectionHeading } from "@/components/shared";
+import HomeFeaturedSection from "./_components/HomeFeaturedSection";
 
 export const metadata: Metadata = {
   title: "Home",
-  description:
-    "Discover, track, and participate in hackathons across Bangladesh — all in one place.",
+  description: APP_DESCRIPTION,
 };
 
 /**
- * Home page — Phase 1 placeholder.
+ * HomePage — Phase 4 production homepage.
  *
- * Phase 3 will replace this with:
- *  - <HackathonList> with SSR + ISR data from GET /api/v1/hackathons
- *  - <HackathonFilter> sidebar with category, date, status filters
- *  - Pagination / infinite scroll
- *
- * Rendering strategy: SSR + ISR (revalidate: 60s)
+ * Sections:
+ *  1. Hero
+ *  2. Featured hackathons (client — fetches from /hackathons?featured=true)
+ *  3. How it works / benefits
+ *  4. Discovery modes (online vs offline)
  */
 export default function HomePage() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col items-center gap-6 text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-(--color-brand-200) bg-(--color-accent) px-4 py-1.5 text-sm font-medium text-(--color-accent-foreground)">
-          🇧🇩 Phase 1 — Infrastructure Ready
-        </span>
+    <div className="home-page">
+      {/* ── 1. Hero ─────────────────────────────────────────────────────── */}
+      <section className="hero-section">
+        <Container className="hero-inner">
+          <div className="hero-badge">
+            <span>🇧🇩</span>
+            <span>Bangladesh&apos;s hackathon discovery platform</span>
+          </div>
 
-        <h1 className="text-4xl font-bold tracking-tight text-(--color-foreground) sm:text-6xl lg:text-7xl">
-          Hackathon Finder{" "}
-          <span className="text-(--color-brand-500)">Bangladesh</span>
-        </h1>
+          <h1 className="hero-title">
+            Find Your Next{" "}
+            <span className="hero-title-accent">Hackathon</span>
+            <br />in Bangladesh
+          </h1>
 
-        <p className="max-w-2xl text-lg text-(--color-muted-foreground) sm:text-xl">
-          Discover, track, and participate in hackathons across Bangladesh.
-          One platform — all events.
-        </p>
+          <p className="hero-subtitle">
+            Discover hackathons, coding contests, ideathons, and innovation challenges.
+            One platform — all events, all cities, all formats.
+          </p>
 
-        {/* ── CTA buttons ──────────────────────────────────────────────── */}
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <Link
-            href={ROUTES.hackathons}
-            className="rounded-xl bg-(--color-brand-500) px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-(--color-brand-600)"
-          >
-            Browse Hackathons
-          </Link>
-          <Link
-            href={ROUTES.register}
-            className="rounded-xl border border-(--color-border) px-6 py-3 text-base font-semibold text-(--color-foreground) transition-colors hover:bg-(--color-muted)"
-          >
-            Create Account
-          </Link>
-        </div>
-      </div>
+          <div className="hero-cta-group">
+            <Link href={ROUTES.hackathons} className="hero-cta-primary" id="hero-browse-btn">
+              Browse Hackathons
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </Link>
+            <Link href={ROUTES.register} className="hero-cta-secondary" id="hero-signup-btn">
+              Create Account
+            </Link>
+          </div>
 
-      {/* ── Infrastructure status grid ───────────────────────────────────── */}
-      <div className="mt-20">
-        <h2 className="mb-8 text-center text-sm font-semibold uppercase tracking-widest text-(--color-muted-foreground)">
-          Build Status
-        </h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { label: "Frontend",     detail: "Next.js + Tailwind v4",     phase: "Phase 1 ✓", done: true },
-            { label: "Backend",      detail: "Express + TypeScript + Zod", phase: "Phase 1 ✓", done: true },
-            { label: "Database",     detail: "MongoDB + Mongoose",         phase: "Connect Atlas", done: false },
-            { label: "Auth System",  detail: "JWT + HttpOnly cookie",      phase: "Phase 2",   done: false },
-          ].map(({ label, detail, phase, done }) => (
-            <div
-              key={label}
-              className="rounded-xl border border-(--color-border) bg-(--color-card) p-5 shadow-sm"
-            >
-              <div className="mb-2 flex items-center justify-between">
-                <p className="font-semibold text-(--color-card-foreground)">{label}</p>
-                <span
-                  className={`h-2.5 w-2.5 rounded-full ${
-                    done ? "bg-emerald-500" : "bg-amber-400"
-                  }`}
-                />
+          {/* Stats row */}
+          <div className="hero-stats">
+            {[
+              { value: "100+", label: "Hackathons" },
+              { value: "50+",  label: "Cities" },
+              { value: "4",    label: "Event Types" },
+              { value: "Free", label: "Always" },
+            ].map(s => (
+              <div key={s.label} className="hero-stat-item">
+                <span className="hero-stat-value">{s.value}</span>
+                <span className="hero-stat-label">{s.label}</span>
               </div>
-              <p className="text-xs text-(--color-muted-foreground)">{detail}</p>
-              <p className={`mt-2 text-xs font-medium ${done ? "text-emerald-600" : "text-amber-500"}`}>
-                {phase}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
+        </Container>
 
-      {/* ── Quick links ───────────────────────────────────────────────────── */}
-      <div className="mt-12 text-center text-sm text-(--color-muted-foreground)">
-        Backend health check:{" "}
-        <a
-          href={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api/v1"}/health`}
-          target="_blank"
-          rel="noreferrer"
-          className="font-medium text-(--color-brand-500) hover:underline"
-        >
-          /api/v1/health
-        </a>
-      </div>
+        {/* decorative background blobs */}
+        <div className="hero-blob hero-blob-1" aria-hidden="true" />
+        <div className="hero-blob hero-blob-2" aria-hidden="true" />
+      </section>
+
+      {/* ── 2. Featured hackathons ──────────────────────────────────────── */}
+      <section className="home-section">
+        <Container>
+          <SectionHeading
+            title="Featured Hackathons"
+            subtitle="Hand-picked events you shouldn't miss"
+            badge="🌟 Featured"
+          />
+          <HomeFeaturedSection />
+          <div className="home-section-cta">
+            <Link href={ROUTES.hackathons} className="hero-cta-secondary" id="featured-view-all-btn">
+              View all hackathons →
+            </Link>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── 3. How it works ────────────────────────────────────────────── */}
+      <section className="home-section home-section-muted">
+        <Container>
+          <SectionHeading
+            title="Why Hackathon Finder?"
+            subtitle={`${APP_NAME} makes it easy to stay on top of the tech event scene in Bangladesh.`}
+            align="center"
+            badge="✨ Benefits"
+          />
+          <div className="benefits-grid">
+            {[
+              {
+                icon: "🔍",
+                title: "Discover faster",
+                desc: "Search and filter across all events by city, mode, type, and deadline — in seconds.",
+              },
+              {
+                icon: "📅",
+                title: "Never miss a deadline",
+                desc: "Each hackathon shows its registration deadline front and center so you always act in time.",
+              },
+              {
+                icon: "🇧🇩",
+                title: "Bangladesh-focused",
+                desc: "Curated for the Bangladeshi tech community — local events, local cities, local context.",
+              },
+              {
+                icon: "🌐",
+                title: "Online & offline",
+                desc: "Browse online, offline, and hybrid events. Participate from anywhere or attend in person.",
+              },
+              {
+                icon: "🆓",
+                title: "Completely free",
+                desc: "No subscription needed. Browse every hackathon and click through to register directly.",
+              },
+              {
+                icon: "🚀",
+                title: "All event types",
+                desc: "Hackathons, coding contests, ideathons, and innovation challenges — all in one place.",
+              },
+            ].map(b => (
+              <div key={b.title} className="benefit-card">
+                <span className="benefit-icon">{b.icon}</span>
+                <h3 className="benefit-title">{b.title}</h3>
+                <p className="benefit-desc">{b.desc}</p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ── 4. Event modes ──────────────────────────────────────────────── */}
+      <section className="home-section">
+        <Container>
+          <SectionHeading
+            title="Your way, your format"
+            subtitle="Whether you prefer to participate online or show up in person, there's an event for you."
+            align="center"
+          />
+          <div className="modes-grid">
+            {[
+              {
+                icon: "🌐",
+                mode: "Online",
+                desc: "Participate from anywhere in Bangladesh — or the world. No commute, no limits.",
+                href: `${ROUTES.hackathons}?mode=online`,
+                color: "mode-card-online",
+              },
+              {
+                icon: "📍",
+                mode: "Offline",
+                desc: "Show up in person, network with builders, and experience the energy of the room.",
+                href: `${ROUTES.hackathons}?mode=offline`,
+                color: "mode-card-offline",
+              },
+              {
+                icon: "🔀",
+                mode: "Hybrid",
+                desc: "The best of both worlds — join remotely or attend in person, your choice.",
+                href: `${ROUTES.hackathons}?mode=hybrid`,
+                color: "mode-card-hybrid",
+              },
+            ].map(m => (
+              <Link key={m.mode} href={m.href} className={`mode-card ${m.color}`} id={`mode-${m.mode.toLowerCase()}`}>
+                <span className="mode-icon">{m.icon}</span>
+                <h3 className="mode-title">{m.mode}</h3>
+                <p className="mode-desc">{m.desc}</p>
+                <span className="mode-cta">Browse {m.mode} events →</span>
+              </Link>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ── 5. Final CTA ────────────────────────────────────────────────── */}
+      <section className="home-section home-cta-section">
+        <Container>
+          <div className="final-cta-card">
+            <h2 className="final-cta-title">Ready to build something amazing?</h2>
+            <p className="final-cta-desc">Browse hundreds of hackathons and find your next big challenge.</p>
+            <Link href={ROUTES.hackathons} className="hero-cta-primary" id="final-cta-btn">
+              Explore Hackathons
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </Link>
+          </div>
+        </Container>
+      </section>
     </div>
   );
 }
