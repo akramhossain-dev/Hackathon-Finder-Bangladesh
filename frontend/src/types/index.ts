@@ -1,32 +1,62 @@
 /**
- * Global TypeScript type definitions — Phase 0 scaffolding.
+ * types/index.ts — Frontend TypeScript type registry (Phase 1).
  *
- * Full Mongoose-backed types will be moved here in Phase 1
- * after DATABASE.md schemas are implemented.
+ * Keep domain-specific types in types/<domain>.ts files and re-export here.
+ * Example:
+ *   export type * from "./hackathon";
+ *   export type * from "./user";
  */
 
-// ── Shared API envelope ────────────────────────────────────────────────────
-export interface ApiResponse<T = unknown> {
-  success: boolean;
+// ── API envelope ──────────────────────────────────────────────────────────────
+export interface ApiSuccessResponse<T = unknown> {
+  success: true;
   message: string;
   data?: T;
 }
 
-export interface PaginatedResponse<T> {
-  success: boolean;
-  data: T[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
+export interface ApiErrorResponse {
+  success: false;
+  message: string;
+  errors?: Array<{ field: string; message: string }>;
 }
 
-// ── User roles ─────────────────────────────────────────────────────────────
+export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
+
+// ── Pagination ────────────────────────────────────────────────────────────────
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface PaginatedResponse<T> {
+  success: true;
+  message: string;
+  data: T[];
+  pagination: PaginationMeta;
+}
+
+// ── Domain enums ──────────────────────────────────────────────────────────────
 export type UserRole = "user" | "admin";
 
-// ── Hackathon status ───────────────────────────────────────────────────────
-export type HackathonStatus = "draft" | "published" | "archived" | "pending_review";
+export type HackathonStatus =
+  | "draft"
+  | "published"
+  | "archived"
+  | "pending_review";
 
-// ── Phase 1: add Hackathon, Organizer, Category, Bookmark, Reminder types ──
+export type SubmissionStatus = "pending" | "approved" | "rejected";
+
+// ── Shared UI types ───────────────────────────────────────────────────────────
+export interface SelectOption {
+  label: string;
+  value: string;
+}
+
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+// ── Phase 2+: add User, Hackathon, Organizer, Category interfaces ─────────────
